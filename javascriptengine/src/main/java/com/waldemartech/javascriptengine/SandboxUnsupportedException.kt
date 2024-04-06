@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.waldemartech.javascriptengine;
-
-import androidx.annotation.NonNull;
+package com.waldemartech.javascriptengine
 
 /**
- * Exception thrown when evaluation is terminated due the {@link JavaScriptSandbox} being dead.
- * This can happen when {@link JavaScriptSandbox#close()} is called or when the sandbox process
- * is killed by the framework.
+ * Exception thrown when attempting to create a [JavaScriptSandbox] via
+ * [JavaScriptSandbox.createConnectedInstanceAsync] when doing so is
+ * not supported.
+ *
+ *
+ * This can occur when the WebView package is too old to provide a sandbox implementation.
  */
-public final class SandboxDeadException extends IsolateTerminatedException {
-    public SandboxDeadException() {
-        super();
-    }
-
-    public SandboxDeadException(@NonNull String message) {
-        super(message);
-    }
-}
+class SandboxUnsupportedException(error: String) : RuntimeException(error)

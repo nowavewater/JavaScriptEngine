@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.waldemartech.javascriptengine;
-
-import androidx.annotation.NonNull;
+package com.waldemartech.javascriptengine
 
 /**
- * Indicates that an evaluation failed due to a syntax error or exception produced by the script.
+ * Super class for all asynchronous exceptions produced by
+ * [JavaScriptIsolate.evaluateJavaScriptAsync].
  */
-public final class EvaluationFailedException extends JavaScriptException {
-    public EvaluationFailedException(@NonNull String error) {
-        super(error);
-    }
+open class JavaScriptException : Exception {
+    constructor(error: String) : super(error)
+    constructor() : super()
 }

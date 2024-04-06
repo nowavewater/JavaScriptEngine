@@ -13,24 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.waldemartech.javascriptengine
 
-package com.waldemartech.javascriptengine;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RestrictTo;
+import androidx.annotation.RestrictTo
 
 /**
  * Indicates that streaming JavaScript code into the JS evaluation environment has failed.
- * <p>
+ *
+ *
  * The JavaScript isolate may continue to be used after this exception has been thrown. The
  * JavaScript evaluation will not proceed if the JavaScript code streaming fails.
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY)
-public final class StreamingFailedException extends JavaScriptException {
-    public StreamingFailedException(@NonNull String error) {
-        super(error);
-    }
-    public StreamingFailedException() {
-        super();
-    }
+class StreamingFailedException : JavaScriptException {
+    constructor(error: String) : super(error)
+    constructor() : super()
 }

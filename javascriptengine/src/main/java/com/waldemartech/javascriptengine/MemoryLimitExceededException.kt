@@ -13,38 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.waldemartech.javascriptengine;
-
-import androidx.annotation.NonNull;
-import androidx.core.util.Consumer;
-
-import java.util.concurrent.Executor;
+package com.waldemartech.javascriptengine
 
 /**
  * Indicates that a JavaScriptIsolate's evaluation failed due to the isolate exceeding its heap
  * size limit.
- * <p>
+ *
+ *
  * This exception may be thrown when exceeding the heap size limit configured for the isolate via
- * {@link IsolateStartupParameters}, or the default limit. Beware that it will not be thrown if the
+ * [IsolateStartupParameters], or the default limit. Beware that it will not be thrown if the
  * Android system as a whole has run out of memory before the JavaScript environment has reached
  * its configured heap limit.
- * <p>
+ *
+ *
  * If an evaluation fails with a MemoryLimitExceededException, it does not imply that that
  * particular evaluation was in any way responsible for any excessive memory usage.
  * MemoryLimitExceededException will be raised for all unresolved and future requested evaluations
  * regardless of their culpability.
- * <p>
+ *
+ *
  * An isolate may run out of memory outside of an explicit evaluation (such as in a microtask), so
  * you should generally not use this exception to detect out of memory issues - instead, use
- * {@link JavaScriptIsolate#addOnTerminatedCallback(Executor, Consumer)} and check
- * for an isolate termination status of {@link TerminationInfo#STATUS_MEMORY_LIMIT_EXCEEDED}.
+ * [JavaScriptIsolate.addOnTerminatedCallback] and check
+ * for an isolate termination status of [TerminationInfo.STATUS_MEMORY_LIMIT_EXCEEDED].
  */
-public final class MemoryLimitExceededException extends IsolateTerminatedException {
-    public MemoryLimitExceededException() {
-        super();
-    }
-    public MemoryLimitExceededException(@NonNull String error) {
-        super(error);
-    }
+class MemoryLimitExceededException : IsolateTerminatedException {
+    constructor() : super()
+    constructor(error: String) : super(error)
 }

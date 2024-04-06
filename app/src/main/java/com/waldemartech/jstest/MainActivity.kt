@@ -1,7 +1,6 @@
 package com.waldemartech.jstest
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,12 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.google.common.util.concurrent.ListenableFuture
-import com.waldemartech.javascriptengine.JavaScriptIsolate
+import androidx.lifecycle.lifecycleScope
 import com.waldemartech.javascriptengine.JavaScriptSandbox
 import com.waldemartech.jstest.ui.theme.JsTestTheme
-import java.util.concurrent.TimeUnit
-
+import kotlinx.coroutines.guava.await
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,18 +36,40 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun testJs() {
-        val jsSandboxFuture: ListenableFuture<JavaScriptSandbox> =
+        lifecycleScope.launch {
+            val jsSandbox = JavaScriptSandbox
+                .createConnectedInstanceAsync(applicationContext)
+                .await()
+            val jsIsolate = jsSandbox.createIsolate()
+            val code = "function sum(a, b) { let r = a + b; return r.toString(); }; sum(3, 4)"
+            val resultFuture = jsIsolate.evaluateJavaScriptAsync(code)
+
+            // Await the result
+            val result = resultFuture.await()
+            Timber.i("result is $result")
+            // Or add a callback
+            /*Futures.addCallback<String>(
+                resultFuture, object : FutureCallback<String?> {
+                    override fun onSuccess(result: String?) {
+                        textBox.text = result
+                    }
+                    override fun onFailure(t: Throwable) {
+                        // Handle errors
+                    }
+                },
+                mainExecutor
+            )*/
+        }
+        /*val jsSandboxFuture: ListenableFuture<JavaScriptSandbox> =
             JavaScriptSandbox.createConnectedInstanceAsync(this)
-
-
-
         val jsIsolate: JavaScriptIsolate = jsSandboxFuture.get().createIsolate()
-
-
+        Timber.i("execute step one")
         val code = "function sum(a, b) { let r = a + b; return r.toString(); }; sum(3, 4)"
         val resultFuture: ListenableFuture<String> = jsIsolate.evaluateJavaScriptAsync(code)
+        Timber.i("execute step two")
         val result: String = resultFuture.get(5, TimeUnit.SECONDS)
-        Log.i("MainActivity", result)
+        Timber.i("execute step three")
+        Timber.i("execute sum result $result")*/
     }
 }
 

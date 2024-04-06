@@ -13,21 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.waldemartech.javascriptengine;
-
-import androidx.annotation.NonNull;
+package com.waldemartech.javascriptengine
 
 /**
- * Super class for all asynchronous exceptions produced by
- * {@link JavaScriptIsolate#evaluateJavaScriptAsync(String)}.
+ * Indicates that an evaluation failed due to a syntax error or exception produced by the script.
  */
-public class JavaScriptException extends Exception {
-    public JavaScriptException(@NonNull String error) {
-        super(error);
-    }
-
-    public JavaScriptException() {
-        super();
-    }
-}
+class EvaluationFailedException(error: String) : JavaScriptException(error)
