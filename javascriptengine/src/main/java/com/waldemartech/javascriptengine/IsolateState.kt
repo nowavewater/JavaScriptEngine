@@ -13,67 +13,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.waldemartech.javascriptengine
 
-package com.waldemartech.javascriptengine;
-
-import android.content.res.AssetFileDescriptor;
-import android.os.ParcelFileDescriptor;
-
-import androidx.annotation.NonNull;
-import androidx.core.util.Consumer;
-
-import com.google.common.util.concurrent.ListenableFuture;
-
-import java.util.concurrent.Executor;
+import android.content.res.AssetFileDescriptor
+import android.os.ParcelFileDescriptor
+import androidx.core.util.Consumer
+import com.google.common.util.concurrent.ListenableFuture
+import java.util.concurrent.Executor
 
 /**
  * Interface for State design pattern.
- * <p>
+ *
+ *
  * Isolates can be in different states due to events within/outside the control of the developer.
  * This pattern allows us to extract out the state related behaviour without maintaining it all in
  * the JavaScriptIsolate class which proved to be error-prone and hard to read.
- * <p>
+ *
+ *
  * State specific behaviour are implemented in concrete classes that implements this interface.
- * <p>
+ *
+ *
  * Refer: https://en.wikipedia.org/wiki/State_pattern
  */
-interface IsolateState {
-    @NonNull
-    ListenableFuture<String> evaluateJavaScriptAsync(@NonNull String code);
+internal interface IsolateState {
+    suspend fun evaluateJavaScriptAsync(code: String): String
+    fun evaluateJavaScriptAsync(afd: AssetFileDescriptor): ListenableFuture<String>
+    fun evaluateJavaScriptAsync(pfd: ParcelFileDescriptor): ListenableFuture<String>
+    fun setConsoleCallback(
+        executor: Executor,
+        callback: JavaScriptConsoleCallback
+    )
 
-    @NonNull
-    ListenableFuture<String> evaluateJavaScriptAsync(@NonNull AssetFileDescriptor afd);
-
-    @NonNull
-    ListenableFuture<String> evaluateJavaScriptAsync(@NonNull ParcelFileDescriptor pfd);
-
-    void setConsoleCallback(@NonNull Executor executor,
-            @NonNull JavaScriptConsoleCallback callback);
-
-    void setConsoleCallback(@NonNull JavaScriptConsoleCallback callback);
-
-    void clearConsoleCallback();
-
-    void provideNamedData(@NonNull String name, @NonNull byte[] inputBytes);
-
-    void close();
+    fun setConsoleCallback(callback: JavaScriptConsoleCallback)
+    fun clearConsoleCallback()
+    fun provideNamedData(name: String, inputBytes: ByteArray)
+    fun close()
 
     /**
      * Check whether the current state is permitted to transition to a dead state
      *
      * @return true iff a transition to a dead state is permitted
      */
-    boolean canDie();
+    fun canDie(): Boolean
 
     /**
      * Method to run after this state has been replaced by a dead state.
      *
      * @param terminationInfo the termination info describing the death
      */
-    default void onDied(@NonNull TerminationInfo terminationInfo) {}
+    fun onDied(terminationInfo: TerminationInfo) {}
+    fun addOnTerminatedCallback(
+        executor: Executor,
+        callback: Consumer<TerminationInfo>
+    )
 
-    void addOnTerminatedCallback(@NonNull Executor executor,
-            @NonNull Consumer<TerminationInfo> callback);
-
-    void removeOnTerminatedCallback(@NonNull Consumer<TerminationInfo> callback);
+    fun removeOnTerminatedCallback(callback: Consumer<TerminationInfo>)
 }

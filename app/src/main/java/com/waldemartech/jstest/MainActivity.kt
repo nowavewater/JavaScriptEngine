@@ -37,15 +37,13 @@ class MainActivity : ComponentActivity() {
 
     private fun testJs() {
         lifecycleScope.launch {
-            val jsSandbox = JavaScriptSandbox
-                .createConnectedInstanceAsync(applicationContext)
-                .await()
+            Timber.i("step 1")
+            val jsSandbox = JavaScriptSandbox.createConnectedInstanceAsync(applicationContext)
+            Timber.i("step 2")
             val jsIsolate = jsSandbox.createIsolate()
             val code = "function sum(a, b) { let r = a + b; return r.toString(); }; sum(3, 4)"
-            val resultFuture = jsIsolate.evaluateJavaScriptAsync(code)
-
+            val result = jsIsolate.evaluateJavaScriptAsync(code)
             // Await the result
-            val result = resultFuture.await()
             Timber.i("result is $result")
             // Or add a callback
             /*Futures.addCallback<String>(
